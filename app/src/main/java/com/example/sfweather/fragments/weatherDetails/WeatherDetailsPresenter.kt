@@ -1,5 +1,6 @@
 package com.example.sfweather.fragments.weatherDetails
 
+import com.example.sfweather.models.OWApiError
 import com.example.sfweather.models.OWResult
 import com.example.sfweather.services.OWApiService
 import com.example.sfweather.utils.WeatherUtils
@@ -17,15 +18,26 @@ class WeatherDetailsPresenter(_view: WeatherDetailsView) {
         val apiClient = OWApiService.create()
         apiClient.findByCityName(cityName).enqueue(object: Callback<OWResult> {
             override fun onResponse(call: Call<OWResult>, response: Response<OWResult>) {
-                owResult = response.body()!!
+                if (response.isSuccessful) {
+                    owResult = response.body()!!
 
-                updateView()
+                    updateView()
+                } else {
+                    try {
+                        val apiError = OWApiError.createFromResponse(response.errorBody()!!)
+
+                        view.showErrorMessage(apiError.message)
+                    } catch (e:Exception) {
+                        view.showErrorMessage(if (!e.message.isNullOrEmpty()) e.message!! else "Unknown Error")
+                    }
+                }
             }
 
             override fun onFailure(call: Call<OWResult>, t: Throwable) {
                 println(t.message)
 
-                //TODO: handle error
+                //TODO: more detailed error?
+                view.showErrorMessage("Unknown Error")
             }
         })
     }
