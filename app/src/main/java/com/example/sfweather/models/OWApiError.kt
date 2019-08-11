@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.ResponseBody
 
-data class OWApiError (
+data class OWApiError(
     @SerializedName("cod") var code: String,
     @SerializedName("message") var message: String
 ) {
