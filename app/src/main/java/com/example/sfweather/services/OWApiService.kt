@@ -14,6 +14,9 @@ interface OWApiService {
     @GET("weather")
     fun findByCityName(@Query("q") cityName: String): Call<OWResult>
 
+    @GET("weather")
+    fun findByCityId(@Query("id") cityId: Int): Call<OWResult>
+
     companion object Factory {
         fun create(): OWApiService {
             val owServiceInterceptor = OWApiServiceInterceptor()

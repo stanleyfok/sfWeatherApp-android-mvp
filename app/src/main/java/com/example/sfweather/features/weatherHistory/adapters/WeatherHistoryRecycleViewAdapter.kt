@@ -9,8 +9,22 @@ import com.example.sfweather.R
 import com.example.sfweather.models.SearchHistory
 import kotlinx.android.synthetic.main.weather_history_item.view.*
 
-class WeatherHistoryRecycleViewAdapter(private val myDataset: List<SearchHistory>) :
-    RecyclerView.Adapter<WeatherHistoryRecycleViewAdapter.MyViewHolder>() {
+
+class WeatherHistoryRecycleViewAdapter(
+    private val myDataset: List<SearchHistory>,
+    private val mListener: WeatherHistoryRecycleViewInterface
+) : RecyclerView.Adapter<WeatherHistoryRecycleViewAdapter.MyViewHolder>() {
+
+    private val mOnClickListener: View.OnClickListener
+
+    init {
+        mOnClickListener = View.OnClickListener { v ->
+            val item = v.tag as SearchHistory
+            // Notify the active callbacks interface (the activity, if the fragment is attached to
+            // one) that an item has been selected.
+            mListener?.onListFragmentInteraction(item)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val textView = LayoutInflater.from(parent.context)
@@ -24,10 +38,10 @@ class WeatherHistoryRecycleViewAdapter(private val myDataset: List<SearchHistory
         holder.mIdView.text = item.cityName
         holder.mContentView.text = item.timestamp.toString()
 
-//        with(holder.mView) {
-//            tag = item
-//            setOnClickListener(mOnClickListener)
-//        }
+        with(holder.mView) {
+            tag = item
+            setOnClickListener(mOnClickListener)
+        }
     }
 
     override fun getItemCount() = myDataset.size

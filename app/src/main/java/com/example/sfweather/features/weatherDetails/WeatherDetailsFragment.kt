@@ -1,5 +1,6 @@
 package com.example.sfweather.features.weatherDetails
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_detail.*
+import android.content.Intent
 
 class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsPresenter
@@ -32,14 +34,30 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
 
         //TODO: load from storage
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 0) {
+                val cityId = data!!.getIntExtra("cityId", -1)
+
+                if (cityId != -1) {
+                    this.presenter.fetchWeatherByCityId(cityId)
+                }
+            }
+        }
+    }
     //endregion
 
     //region click listener
     override fun onClick(view: View) {
         when (view.id) {
             R.id.viewHistoryButton -> {
-                (activity as MainActivity).replaceFragments(WeatherHistoryFragment())
+                val fragment = WeatherHistoryFragment()
+                fragment.setTargetFragment(this, 0)
 
+                (activity as MainActivity).replaceFragments(fragment)
             }
         }
     }

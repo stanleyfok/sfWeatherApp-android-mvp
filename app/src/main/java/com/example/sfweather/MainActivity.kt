@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 
-import com.example.sfweather.dummy.DummyContent
 import com.example.sfweather.features.weatherDetails.WeatherDetailsFragment
-import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,8 +13,12 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        this.loadFragment(WeatherDetailsFragment())
+    }
+
+    fun loadFragment(fragment: Fragment) {
         val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragContainer, WeatherDetailsFragment())
+        ft.replace(R.id.fragContainer, fragment)
         ft.commit()
     }
 
@@ -26,5 +28,9 @@ class MainActivity : AppCompatActivity() {
         ft.addToBackStack("stack")
         ft.replace(R.id.fragContainer, fragment)
         ft.commit()
+    }
+
+    fun popStack() {
+        supportFragmentManager.popBackStack()
     }
 }

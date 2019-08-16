@@ -21,7 +21,20 @@ class WeatherDetailsPresenter(_view: WeatherDetailsView): KoinComponent {
 
     fun fetchWeatherByCityName(cityName: String) {
         val apiClient = OWApiService.create()
-        apiClient.findByCityName(cityName).enqueue(object: Callback<OWResult> {
+        val call = apiClient.findByCityName(cityName)
+
+        fetchWeather(call)
+    }
+
+    fun fetchWeatherByCityId(cityId: Int) {
+        val apiClient = OWApiService.create()
+        val call = apiClient.findByCityId(cityId)
+
+        fetchWeather(call)
+    }
+
+    fun fetchWeather(call: Call<OWResult>) {
+        call.enqueue(object: Callback<OWResult> {
             override fun onResponse(call: Call<OWResult>, response: Response<OWResult>) {
                 if (response.isSuccessful) {
                     val owResult = response.body()!!
@@ -50,6 +63,8 @@ class WeatherDetailsPresenter(_view: WeatherDetailsView): KoinComponent {
             }
         })
     }
+
+
 
     private fun updateView(owResult:OWResult) {
         view.updateCityName(owResult.name)
