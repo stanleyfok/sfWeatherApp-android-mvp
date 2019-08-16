@@ -1,4 +1,4 @@
-package com.example.sfweather.fragments.weatherDetails
+package com.example.sfweather.features.weatherDetails
 
 import com.example.sfweather.models.OWApiError
 import com.example.sfweather.models.OWResult
@@ -22,6 +22,8 @@ class WeatherDetailsPresenter(_view: WeatherDetailsView) {
                     owResult = response.body()!!
 
                     updateView()
+
+                    // store to db
                 } else {
                     try {
                         val apiError = OWApiError.createFromResponse(response.errorBody()!!)

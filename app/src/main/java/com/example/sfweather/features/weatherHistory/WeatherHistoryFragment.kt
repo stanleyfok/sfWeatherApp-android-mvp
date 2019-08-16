@@ -1,4 +1,4 @@
-package com.example.sfweather.fragments.weatherHistory
+package com.example.sfweather.features.weatherHistory
 
 import android.content.Context
 import android.os.Bundle

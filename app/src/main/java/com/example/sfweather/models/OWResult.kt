@@ -17,42 +17,42 @@ data class OWResult(
     @SerializedName("wind")         var wind: OWWind,
     @SerializedName("clouds")       var clouds: OWClouds,
     @SerializedName("sys")          var sys: OWSys
-)
+) {
+    data class OWCoord(
+        @SerializedName("lon")          var lon: Float,
+        @SerializedName("lat")          var lat: Float
+    )
 
-data class OWCoord(
-    @SerializedName("lon")          var lon: Float,
-    @SerializedName("lat")          var lat: Float
-)
+    data class OWWeather(
+        @SerializedName("id")           var id: Int,
+        @SerializedName("main")         var main: String,
+        @SerializedName("description")  var description: String,
+        @SerializedName("icon")         var icon: String
+    )
 
-data class OWWeather(
-    @SerializedName("id")           var id: Int,
-    @SerializedName("main")         var main: String,
-    @SerializedName("description")  var description: String,
-    @SerializedName("icon")         var icon: String
-)
+    data class OWMain(
+        @SerializedName("temp")         var temp: Float,
+        @SerializedName("pressure")     var pressure: Float,
+        @SerializedName("humidity")     var humidity: Float,
+        @SerializedName("temp_min")     var temp_min: Float,
+        @SerializedName("temp_max")     var temp_max: Float
+    )
 
-data class OWMain(
-    @SerializedName("temp")         var temp: Float,
-    @SerializedName("pressure")     var pressure: Float,
-    @SerializedName("humidity")     var humidity: Float,
-    @SerializedName("temp_min")     var temp_min: Float,
-    @SerializedName("temp_max")     var temp_max: Float
-)
+    data class OWWind(
+        @SerializedName("speed")        var speed: Float,
+        @SerializedName("deg")          var deg: Float
+    )
 
-data class OWWind(
-    @SerializedName("speed")        var speed: Float,
-    @SerializedName("deg")          var deg: Float
-)
+    data class OWClouds(
+        @SerializedName("all")          var all: Float
+    )
 
-data class OWClouds(
-    @SerializedName("all")          var all: Float
-)
-
-data class OWSys(
-    @SerializedName("type")         var type: Int,
-    @SerializedName("id")           var id: Int,
-    @SerializedName("message")      var message: Float,
-    @SerializedName("country")      var country: String,
-    @SerializedName("sunrise")      var sunrise: Int,
-    @SerializedName("sunset")       var sunset: Int
-)
+    data class OWSys(
+        @SerializedName("type")         var type: Int,
+        @SerializedName("id")           var id: Int,
+        @SerializedName("message")      var message: Float,
+        @SerializedName("country")      var country: String,
+        @SerializedName("sunrise")      var sunrise: Int,
+        @SerializedName("sunset")       var sunset: Int
+    )
+}

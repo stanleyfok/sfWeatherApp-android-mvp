@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 
-import com.example.sfweather.fragments.weatherHistory.WeatherHistoryFragment.OnListFragmentInteractionListener
+import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment.OnListFragmentInteractionListener
 import com.example.sfweather.dummy.DummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.weather_history.view.*

@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 
 import com.example.sfweather.dummy.DummyContent
-import com.example.sfweather.fragments.weatherDetails.WeatherDetailsFragment
-import com.example.sfweather.fragments.weatherHistory.WeatherHistoryFragment
+import com.example.sfweather.features.weatherDetails.WeatherDetailsFragment
+import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 
 class MainActivity : AppCompatActivity(), WeatherHistoryFragment.OnListFragmentInteractionListener {
 

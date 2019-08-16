@@ -1,4 +1,4 @@
-package com.example.sfweather.fragments.weatherDetails
+package com.example.sfweather.features.weatherDetails
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import com.example.sfweather.MainActivity
 import com.example.sfweather.R
-import com.example.sfweather.fragments.weatherHistory.WeatherHistoryFragment
+import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_detail.*
 

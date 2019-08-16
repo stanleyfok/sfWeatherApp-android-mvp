@@ -1,4 +1,4 @@
-package com.example.sfweather.fragments.weatherDetails
+package com.example.sfweather.features.weatherDetails
 
 interface WeatherDetailsView {
     fun updateCityName(cityName: String)
