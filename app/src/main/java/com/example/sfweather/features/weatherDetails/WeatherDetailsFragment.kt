@@ -13,6 +13,7 @@ import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_detail.*
 import android.content.Intent
+import com.example.sfweather.constants.AppConstants
 
 class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsPresenter
@@ -39,7 +40,7 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 0) {
+            if (requestCode == AppConstants.REQ_CODE_FRAGMENT_SEARCH_HISTORY) {
                 val cityId = data!!.getIntExtra("cityId", -1)
 
                 if (cityId != -1) {
@@ -55,7 +56,7 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
         when (view.id) {
             R.id.viewHistoryButton -> {
                 val fragment = WeatherHistoryFragment()
-                fragment.setTargetFragment(this, 0)
+                fragment.setTargetFragment(this, AppConstants.REQ_CODE_FRAGMENT_SEARCH_HISTORY)
 
                 (activity as MainActivity).replaceFragments(fragment)
             }
