@@ -15,22 +15,14 @@ class SearchHistoryService {
     }
 
     suspend fun getAll():List<SearchHistory> {
-        val res = GlobalScope.async {
-            searchHistoryRepository.getAll()
-        }
-
-        return res.await()
+        return searchHistoryRepository.getAll()
     }
 
     fun insert(searchHistory: SearchHistory) {
-        GlobalScope.launch {
-            searchHistoryRepository.insert(searchHistory)
-        }
+        searchHistoryRepository.insert(searchHistory)
     }
 
     fun deleteByCityId(cityId: Int) {
-        GlobalScope.launch {
-            searchHistoryRepository.deleteByCityId(cityId)
-        }
+        searchHistoryRepository.deleteByCityId(cityId)
     }
 }

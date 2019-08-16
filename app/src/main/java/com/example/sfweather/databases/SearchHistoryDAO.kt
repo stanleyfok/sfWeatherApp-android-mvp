@@ -7,7 +7,7 @@ import com.example.sfweather.models.SearchHistory
 
 @Dao
 interface SearchHistoryDAO {
-    @Query("Select * From searchHistory")
+    @Query("Select * From searchHistory ORDER BY timestamp DESC")
     fun getAll(): List<SearchHistory>
 
     @Query("Select count(cityId) From searchHistory WHERE cityId = :cityId")

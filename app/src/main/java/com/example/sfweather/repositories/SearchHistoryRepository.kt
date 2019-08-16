@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.sfweather.databases.AppDB
 import com.example.sfweather.models.SearchHistory
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class SearchHistoryRepository {
 
@@ -17,20 +21,25 @@ class SearchHistoryRepository {
         ).build()
     }
 
-    fun getAll(): List<SearchHistory> {
-
-        return this.database.searchHistoryDao().getAll()
+    suspend fun getAll(): List<SearchHistory> {
+        return GlobalScope.async {
+            database.searchHistoryDao().getAll()
+        }.await()
     }
 
-    fun insert(searchHistory: SearchHistory) {
-        val count = this.database.searchHistoryDao().getCountByCityId(searchHistory.cityId)
+    fun insert(searchHistory: SearchHistory):Job {
+        return GlobalScope.launch {
+            val count = database.searchHistoryDao().getCountByCityId(searchHistory.cityId)
 
-        if (count == 0) {
-            this.database.searchHistoryDao().insert(searchHistory)
+            if (count == 0) {
+                database.searchHistoryDao().insert(searchHistory)
+            }
         }
     }
 
-    fun deleteByCityId(cityId: Int) {
-        this.database.searchHistoryDao().deleteByCityId(cityId)
+    fun deleteByCityId(cityId: Int):Job {
+        return GlobalScope.launch {
+            database.searchHistoryDao().deleteByCityId(cityId)
+        }
     }
 }

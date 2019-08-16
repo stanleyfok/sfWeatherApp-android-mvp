@@ -8,7 +8,7 @@ import com.example.sfweather.dummy.DummyContent
 import com.example.sfweather.features.weatherDetails.WeatherDetailsFragment
 import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 
-class MainActivity : AppCompatActivity(), WeatherHistoryFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +26,5 @@ class MainActivity : AppCompatActivity(), WeatherHistoryFragment.OnListFragmentI
         ft.addToBackStack("stack")
         ft.replace(R.id.fragContainer, fragment)
         ft.commit()
-    }
-
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-        println(item.toString())
     }
 }

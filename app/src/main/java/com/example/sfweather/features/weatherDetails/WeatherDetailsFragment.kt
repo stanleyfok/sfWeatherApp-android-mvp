@@ -12,7 +12,7 @@ import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_detail.*
 
-class WeatherDetailsFragment : Fragment(), View.OnClickListener, SearchView.OnQueryTextListener, WeatherDetailsView {
+class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsPresenter
 
     //region life cycle
