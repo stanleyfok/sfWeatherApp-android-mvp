@@ -1,4 +1,4 @@
-package com.example.sfweather.services
+package com.example.sfweather.features.weatherDetails.services
 
 import com.example.sfweather.BuildConfig
 import com.example.sfweather.models.OWResult

@@ -1,22 +1,18 @@
-package com.example.sfweather.services
+package com.example.sfweather.features.common.services
 
 import com.example.sfweather.models.SearchHistory
-import com.example.sfweather.repositories.SearchHistoryRepository
+import com.example.sfweather.features.common.repositories.SearchHistoryRepository
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class SearchHistoryService():KoinComponent {
     private val searchHistoryRepository: SearchHistoryRepository by inject()
 
-    suspend fun getAll():List<SearchHistory> {
+    fun getAll():List<SearchHistory> {
         return searchHistoryRepository.getAll()
     }
 
-    suspend fun getAllCount():Int {
-        return searchHistoryRepository.getAllCount()
-    }
-
-    suspend fun getLatest():SearchHistory {
+    fun getLatest():SearchHistory {
         return searchHistoryRepository.getLatest()
     }
 

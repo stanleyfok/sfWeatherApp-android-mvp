@@ -1,4 +1,4 @@
-package com.example.sfweather.repositories
+package com.example.sfweather.features.common.repositories
 
 import com.example.sfweather.databases.SearchHistoryDAO
 import com.example.sfweather.models.SearchHistory
@@ -13,22 +13,12 @@ class SearchHistoryRepository: KoinComponent {
 
     private val dao: SearchHistoryDAO by inject()
 
-    suspend fun getAll(): List<SearchHistory> {
-        return GlobalScope.async {
-            dao.getAll()
-        }.await()
+    fun getAll(): List<SearchHistory> {
+        return dao.getAll()
     }
 
-    suspend fun getAllCount(): Int {
-        return GlobalScope.async {
-            dao.getAllCount()
-        }.await()
-    }
-
-    suspend fun getLatest(): SearchHistory {
-        return GlobalScope.async {
-            dao.getLatest()
-        }.await()
+    fun getLatest(): SearchHistory {
+        return dao.getLatest()
     }
 
     fun upsert(searchHistory: SearchHistory):Job {

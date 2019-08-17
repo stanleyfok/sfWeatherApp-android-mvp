@@ -1,7 +1,7 @@
 package com.example.sfweather.features.weatherHistory
 
 import com.example.sfweather.models.SearchHistory
-import com.example.sfweather.services.SearchHistoryService
+import com.example.sfweather.features.common.services.SearchHistoryService
 import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
