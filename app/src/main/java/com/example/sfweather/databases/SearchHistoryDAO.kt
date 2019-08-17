@@ -11,6 +11,9 @@ interface SearchHistoryDAO {
     @Query("Select * From searchHistory ORDER BY timestamp DESC")
     fun getAll(): List<SearchHistory>
 
+    @Query("Select count(*) From searchHistory ORDER BY timestamp DESC")
+    fun getAllCount(): Int
+
     @Query("Select * From searchHistory ORDER BY timestamp DESC LIMIT 1")
     fun getLatest(): SearchHistory
 

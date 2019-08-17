@@ -10,16 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sfweather.MainActivity
 import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.adapters.WeatherHistoryRecycleViewAdapter
-import com.example.sfweather.features.weatherHistory.adapters.WeatherHistoryRecycleViewInterface
 import com.example.sfweather.models.SearchHistory
 
-import kotlinx.android.synthetic.main.fragment_weather_history.view.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.content.Intent
+import kotlinx.android.synthetic.main.fragment_weather_history.*
 
-class WeatherHistoryFragment : Fragment(), WeatherHistoryView, WeatherHistoryRecycleViewInterface {
+class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var presenter: WeatherHistoryPresenter
@@ -28,29 +26,30 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryView, WeatherHistoryRec
         val view:View = inflater.inflate(R.layout.fragment_weather_history, container, false)
         this.presenter = WeatherHistoryPresenter(this);
 
-        val self = this
-        GlobalScope.launch(Dispatchers.Main) {
-            val searchHistories = presenter.fetchAllSearchHistories()
-
-            viewAdapter = WeatherHistoryRecycleViewAdapter(searchHistories, self)
-
-            recyclerView = view.weatherHistoryRecycleView.apply {
-                setHasFixedSize(true)
-                adapter = viewAdapter
-            }
+        GlobalScope.launch() {
+            presenter.fetchAllSearchHistories()
         }
 
         return view
     }
 
-    override fun onListFragmentInteraction(item: SearchHistory) {
+    override fun onListFragmentInteraction(searchHistory: SearchHistory) {
         targetFragment?.let {
             val intent = Intent(context, WeatherHistoryFragment::class.java)
-            intent.putExtra("cityId", item.cityId);
+            intent.putExtra("cityId", searchHistory.cityId);
 
             it.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent);
         }
 
         (activity as MainActivity).popStack()
+    }
+
+    override fun updateView(searchHistories: List<SearchHistory>) {
+        viewAdapter = WeatherHistoryRecycleViewAdapter(searchHistories, this)
+
+        recyclerView = this.weatherHistoryRecycleView.apply {
+            setHasFixedSize(true)
+            adapter = viewAdapter
+        }
     }
 }

@@ -12,6 +12,10 @@ class SearchHistoryService():KoinComponent {
         return searchHistoryRepository.getAll()
     }
 
+    suspend fun getAllCount():Int {
+        return searchHistoryRepository.getAllCount()
+    }
+
     suspend fun getLatest():SearchHistory {
         return searchHistoryRepository.getLatest()
     }

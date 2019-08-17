@@ -19,6 +19,12 @@ class SearchHistoryRepository: KoinComponent {
         }.await()
     }
 
+    suspend fun getAllCount(): Int {
+        return GlobalScope.async {
+            dao.getAllCount()
+        }.await()
+    }
+
     suspend fun getLatest(): SearchHistory {
         return GlobalScope.async {
             dao.getLatest()
