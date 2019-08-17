@@ -13,27 +13,36 @@ import kotlin.math.roundToInt
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
+class WeatherDetailsPresenter: KoinComponent {
 
-class WeatherDetailsPresenter(_view: WeatherDetailsView): KoinComponent {
+    private var view: WeatherDetailsView
 
-    private var view: WeatherDetailsView = _view
+    private val owApiService: OWApiService by inject()
     private val searchHistoryService: SearchHistoryService by inject()
 
+    constructor(view: WeatherDetailsView) {
+        this.view = view
+    }
+
+    suspend fun fetchLastStoredWeather() {
+        val searchHistory = searchHistoryService.getLatest()
+
+        this.fetchWeatherByCityId(searchHistory.cityId)
+    }
+
     fun fetchWeatherByCityName(cityName: String) {
-        val apiClient = OWApiService.create()
-        val call = apiClient.findByCityName(cityName)
+        val call = owApiService.findByCityName(cityName)
 
         fetchWeather(call)
     }
 
     fun fetchWeatherByCityId(cityId: Int) {
-        val apiClient = OWApiService.create()
-        val call = apiClient.findByCityId(cityId)
+        val call = owApiService.findByCityId(cityId)
 
         fetchWeather(call)
     }
 
-    fun fetchWeather(call: Call<OWResult>) {
+    private fun fetchWeather(call: Call<OWResult>) {
         call.enqueue(object: Callback<OWResult> {
             override fun onResponse(call: Call<OWResult>, response: Response<OWResult>) {
                 if (response.isSuccessful) {
@@ -64,18 +73,14 @@ class WeatherDetailsPresenter(_view: WeatherDetailsView): KoinComponent {
         })
     }
 
+    private fun updateView(owResult: OWResult) {
+        val weatherDetailsState = WeatherDetailsState(
+            owResult.name,
+            owResult.main.temp,
+            owResult.weather[0].main
+        )
 
-
-    private fun updateView(owResult:OWResult) {
-        view.updateCityName(owResult.name)
-
-        val displayTemp = WeatherUtils.kelvinToCelsius(owResult.main.temp).roundToInt().toString() + "°"
-        view.updateTemperature(displayTemp)
-
-        if (owResult.weather.isNotEmpty()) {
-            view.updateWeatherDescription(owResult.weather[0].main)
-        }
-
+        view.setState(weatherDetailsState)
     }
 
     private fun insertSearchHistory(owResult: OWResult) {

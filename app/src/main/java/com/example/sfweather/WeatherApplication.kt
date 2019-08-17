@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.example.sfweather.databases.AppDB
 import com.example.sfweather.repositories.SearchHistoryRepository
+import com.example.sfweather.services.OWApiService
 import com.example.sfweather.services.SearchHistoryService
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -13,17 +14,18 @@ class WeatherApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val database = Room.databaseBuilder(
-            applicationContext,
-            AppDB::class.java,
-            AppDB.DB_NAME
-        ).build()
-
         val appModule = module {
-            single { database }
+            single {
+                Room.databaseBuilder(
+                    applicationContext,
+                    AppDB::class.java,
+                    AppDB.DB_NAME
+                ).build()
+            }
             single { get<AppDB>().searchHistoryDao() }
             single { SearchHistoryService() }
             single { SearchHistoryRepository() }
+            single { OWApiService.create() }
         }
 
         startKoin {

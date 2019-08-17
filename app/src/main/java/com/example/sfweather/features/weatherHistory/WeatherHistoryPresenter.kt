@@ -5,10 +5,14 @@ import com.example.sfweather.services.SearchHistoryService
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class WeatherHistoryPresenter(_view:WeatherHistoryView): KoinComponent {
+class WeatherHistoryPresenter: KoinComponent {
+    private var view: WeatherHistoryView
 
-    private var view: WeatherHistoryView = _view
     private val searchHistoryService: SearchHistoryService by inject()
+
+    constructor(view: WeatherHistoryView) {
+        this.view = view
+    }
 
     suspend fun fetchAllSearchHistories(): List<SearchHistory> {
         return searchHistoryService.getAll()

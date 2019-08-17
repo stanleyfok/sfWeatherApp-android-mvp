@@ -19,12 +19,20 @@ class SearchHistoryRepository: KoinComponent {
         }.await()
     }
 
-    fun insert(searchHistory: SearchHistory):Job {
+    suspend fun getLatest(): SearchHistory {
+        return GlobalScope.async {
+            dao.getLatest()
+        }.await()
+    }
+
+    fun upsert(searchHistory: SearchHistory):Job {
         return GlobalScope.launch {
             val count = dao.getCountByCityId(searchHistory.cityId)
 
             if (count == 0) {
                 dao.insert(searchHistory)
+            } else {
+                dao.update(searchHistory)
             }
         }
     }

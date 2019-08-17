@@ -14,15 +14,21 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_detail.*
 import android.content.Intent
 import com.example.sfweather.constants.AppConstants
+import com.example.sfweather.utils.WeatherUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsPresenter
+    private var state:WeatherDetailsState? = null
 
     //region life cycle
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view:View = inflater.inflate(R.layout.fragment_weather_detail, container, false)
 
-        this.presenter = WeatherDetailsPresenter(this);
+        this.presenter = WeatherDetailsPresenter(this)
 
         return view
     }
@@ -30,10 +36,16 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.viewHistoryButton.setOnClickListener(this)
-        this.searchView.setOnQueryTextListener(this)
+        viewHistoryButton.setOnClickListener(this)
+        searchView.setOnQueryTextListener(this)
 
-        //TODO: load from storage
+        if (state != null) {
+            this.updateView()
+        } else {
+            GlobalScope.launch(Dispatchers.Main) {
+                presenter.fetchLastStoredWeather()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -82,16 +94,21 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
     //endregion
 
     //region interface methods
-    override fun updateTemperature(temp: String) {
-        this.temperatureLabel.text = temp
+    override fun setState(state: WeatherDetailsState) {
+        this.state = state
+
+        this.updateView()
     }
 
-    override fun updateCityName(cityName: String) {
-        this.cityNameLabel.text = cityName
-    }
+    override fun updateView() {
+        this.state?.let {
+            val displayTemp = WeatherUtils.kelvinToCelsius(it.temperature).roundToInt().toString() + "°"
 
-    override fun updateWeatherDescription(desc: String) {
-        this.weatherLabel.text = desc
+            this.cityNameLabel.text = it.cityName
+            this.temperatureLabel.text = displayTemp
+            this.weatherLabel.text = it.weatherDesc
+        }
+
     }
 
     override fun showErrorMessage(errorMessage: String) {

@@ -25,7 +25,6 @@ tools:context=".features.weatherDetails.WeatherDetailsFragment">
                 android:id="@+id/cityNameLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hong Kong"
                 android:textAlignment="center"
                 android:layout_marginBottom="10dp"
                 android:textSize="32dp"
@@ -34,7 +33,6 @@ tools:context=".features.weatherDetails.WeatherDetailsFragment">
         <TextView
                 android:id="@+id/weatherLabel"
                 android:textAlignment="center"
-                android:text="Sunny"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
@@ -43,7 +41,6 @@ tools:context=".features.weatherDetails.WeatherDetailsFragment">
         />
         <TextView
                 android:id="@+id/temperatureLabel"
-                android:text="32°"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"

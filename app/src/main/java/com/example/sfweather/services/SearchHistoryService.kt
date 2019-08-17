@@ -12,8 +12,12 @@ class SearchHistoryService():KoinComponent {
         return searchHistoryRepository.getAll()
     }
 
+    suspend fun getLatest():SearchHistory {
+        return searchHistoryRepository.getLatest()
+    }
+
     fun insert(searchHistory: SearchHistory) {
-        searchHistoryRepository.insert(searchHistory)
+        searchHistoryRepository.upsert(searchHistory)
     }
 
     fun deleteByCityId(cityId: Int) {
