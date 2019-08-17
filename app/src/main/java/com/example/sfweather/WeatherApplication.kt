@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.example.sfweather.databases.AppDB
 import com.example.sfweather.repositories.SearchHistoryRepository
-import com.example.sfweather.services.OWApiService
+import com.example.sfweather.services.OWService
 import com.example.sfweather.services.SearchHistoryService
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -25,7 +25,7 @@ class WeatherApplication: Application() {
             single { get<AppDB>().searchHistoryDao() }
             single { SearchHistoryService() }
             single { SearchHistoryRepository() }
-            single { OWApiService.create() }
+            single { OWService.create() }
         }
 
         startKoin {

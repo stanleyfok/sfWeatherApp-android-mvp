@@ -3,11 +3,9 @@ package com.example.sfweather.features.weatherDetails
 import com.example.sfweather.models.OWApiError
 import com.example.sfweather.models.OWResult
 import com.example.sfweather.models.SearchHistory
-import com.example.sfweather.services.OWApiService
+import com.example.sfweather.services.OWService
 import com.example.sfweather.services.SearchHistoryService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Response
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -16,7 +14,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
 
     private var view: WeatherDetailsContract.View
 
-    private val owApiService: OWApiService by inject()
+    private val owService: OWService by inject()
     private val searchHistoryService: SearchHistoryService by inject()
 
     constructor(view: WeatherDetailsContract.View) {
@@ -24,8 +22,10 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     }
 
     override fun fetchLastStoredWeather() {
-        GlobalScope.launch {
-            val searchHistory = searchHistoryService.getLatest()
+        CoroutineScope(Dispatchers.Main).launch {
+            val searchHistory = withContext(Dispatchers.IO) {
+                searchHistoryService.getLatest()
+            }
 
             if (searchHistory != null) {
                 fetchWeatherByCityId(searchHistory.cityId)
@@ -34,20 +34,24 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     }
 
     override fun fetchWeatherByCityName(cityName: String) {
-        this.setViewLoading(true)
+        CoroutineScope(Dispatchers.Main).launch {
+            view.setIsLoading(true)
 
-        GlobalScope.launch {
-            val response = owApiService.findByCityName(cityName)
+            val response = withContext(Dispatchers.IO) {
+                owService.findByCityName(cityName)
+            }
 
             handleResponse(response)
         }
     }
 
     override fun fetchWeatherByCityId(cityId: Int) {
-        this.setViewLoading(true)
+        CoroutineScope(Dispatchers.Main).launch {
+            view.setIsLoading(true)
 
-        GlobalScope.launch {
-            val response = owApiService.findByCityId(cityId)
+            val response = withContext(Dispatchers.IO) {
+                owService.findByCityId(cityId)
+            }
 
             handleResponse(response)
         }
@@ -61,7 +65,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
                 // update view
 
                 val weatherDetailsData = WeatherDetailsData(owResult)
-                updateView(weatherDetailsData)
+                view.updateView(weatherDetailsData)
 
                 // store to db
                 insertSearchHistory(owResult)
@@ -81,19 +85,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
                 view.showErrorMessage("Unknown Error")
             }
         } finally {
-            setViewLoading(false)
-        }
-    }
-
-    private fun setViewLoading(bool: Boolean) {
-        GlobalScope.launch(Dispatchers.Main) {
-            view.setIsLoading(bool)
-        }
-    }
-
-    private fun updateView(weatherDetailsData: WeatherDetailsData) {
-        GlobalScope.launch(Dispatchers.Main) {
-            view.updateView(weatherDetailsData)
+            view.setIsLoading(false)
         }
     }
 
