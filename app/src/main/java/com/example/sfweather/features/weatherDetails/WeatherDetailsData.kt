@@ -2,7 +2,7 @@ package com.example.sfweather.features.weatherDetails
 
 import com.example.sfweather.models.OWResult
 
-data class WeatherDetailsState(val owResult: OWResult) {
+data class WeatherDetailsData(val owResult: OWResult) {
     var cityName: String = ""
     var temperature: Float
     var weatherDesc: String = ""

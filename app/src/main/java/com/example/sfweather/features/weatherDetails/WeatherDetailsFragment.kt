@@ -19,11 +19,11 @@ import com.example.sfweather.utils.WeatherUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsPresenter
-    private var state:WeatherDetailsState? = null
+
+    private var isRecentSearchLoaded:Boolean = false
     private var cityIdToFetch:Int = -1
 
     //region life cycle
@@ -41,17 +41,17 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
         viewHistoryButton.setOnClickListener(this)
         searchView.setOnQueryTextListener(this)
 
-        if (this.state != null) {
-            this.updateView()
+        if (!isRecentSearchLoaded) {
+            GlobalScope.launch(Dispatchers.Main) {
+                presenter.fetchLastStoredWeather()
+            }
 
+            isRecentSearchLoaded = true
+        } else {
             if (this.cityIdToFetch != -1) {
                 this.presenter.fetchWeatherByCityId(cityIdToFetch)
 
                 this.cityIdToFetch = -1;
-            }
-        } else {
-            GlobalScope.launch(Dispatchers.Main) {
-                presenter.fetchLastStoredWeather()
             }
         }
     }
@@ -101,25 +101,16 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
     //endregion
 
     //region interface methods
-    override fun setState(state: WeatherDetailsState) {
-        this.state = state
-
-        this.updateView()
-    }
-
     override fun setIsLoading(bool: Boolean) {
         this.progressBar.visibility = if (bool) ProgressBar.VISIBLE else ProgressBar.INVISIBLE
     }
 
-    override fun updateView() {
-        this.state?.let {
-            val displayTemp = String.format("%.1f", WeatherUtils.kelvinToCelsius(it.temperature)) + "°"
+    override fun updateView(data: WeatherDetailsData) {
+        val displayTemp = String.format("%.1f", WeatherUtils.kelvinToCelsius(data.temperature)) + "°"
 
-            this.cityNameLabel.text = it.cityName
-            this.temperatureLabel.text = displayTemp
-            this.weatherLabel.text = it.weatherDesc
-        }
-
+        this.cityNameLabel.text = data.cityName
+        this.temperatureLabel.text = displayTemp
+        this.weatherLabel.text = data.weatherDesc
     }
 
     override fun showErrorMessage(errorMessage: String) {

@@ -5,11 +5,9 @@ import com.example.sfweather.models.OWResult
 import com.example.sfweather.models.SearchHistory
 import com.example.sfweather.services.OWApiService
 import com.example.sfweather.services.SearchHistoryService
-import com.example.sfweather.utils.WeatherUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.math.roundToInt
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -51,8 +49,8 @@ class WeatherDetailsPresenter: KoinComponent {
                     val owResult = response.body()!!
 
                     // update view
-                    val weatherDetailsState = WeatherDetailsState(owResult)
-                    view.setState(weatherDetailsState)
+                    val weatherDetailsData = WeatherDetailsData(owResult)
+                    view.updateView(weatherDetailsData)
 
                     // store to db
                     insertSearchHistory(owResult)
@@ -70,10 +68,12 @@ class WeatherDetailsPresenter: KoinComponent {
             }
 
             override fun onFailure(call: Call<OWResult>, t: Throwable) {
-                println(t.message)
+                t.message?.let {
+                    view.showErrorMessage(it)
+                } ?: run {
+                    view.showErrorMessage("Unknown Error")
+                }
 
-                //TODO: more detailed error?
-                view.showErrorMessage("Unknown Error")
                 view.setIsLoading(false)
             }
         })
