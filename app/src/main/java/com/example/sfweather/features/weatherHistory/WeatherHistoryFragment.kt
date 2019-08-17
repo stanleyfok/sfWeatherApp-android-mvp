@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_weather_history.*
 class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var presenter: WeatherHistoryPresenter
+    private lateinit var presenter: WeatherHistoryContract.Presenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view:View = inflater.inflate(R.layout.fragment_weather_history, container, false)

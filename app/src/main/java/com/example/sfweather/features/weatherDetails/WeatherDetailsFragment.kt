@@ -20,8 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
-    private lateinit var presenter: WeatherDetailsPresenter
+class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnClickListener, SearchView.OnQueryTextListener {
+    private lateinit var presenter: WeatherDetailsContract.Presenter
 
     private var isRecentSearchLoaded:Boolean = false
     private var cityIdToFetch:Int = -1

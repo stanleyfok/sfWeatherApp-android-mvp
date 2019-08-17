@@ -11,30 +11,30 @@ import retrofit2.Response
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class WeatherDetailsPresenter: KoinComponent {
+class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
 
-    private var view: WeatherDetailsView
+    private var view: WeatherDetailsContract.View
 
     private val owApiService: OWApiService by inject()
     private val searchHistoryService: SearchHistoryService by inject()
 
-    constructor(view: WeatherDetailsView) {
+    constructor(view: WeatherDetailsContract.View) {
         this.view = view
     }
 
-    suspend fun fetchLastStoredWeather() {
+    override suspend fun fetchLastStoredWeather() {
         val searchHistory = searchHistoryService.getLatest()
 
         this.fetchWeatherByCityId(searchHistory.cityId)
     }
 
-    fun fetchWeatherByCityName(cityName: String) {
+    override fun fetchWeatherByCityName(cityName: String) {
         val call = owApiService.findByCityName(cityName)
 
         fetchWeather(call)
     }
 
-    fun fetchWeatherByCityId(cityId: Int) {
+    override fun fetchWeatherByCityId(cityId: Int) {
         val call = owApiService.findByCityId(cityId)
 
         fetchWeather(call)
