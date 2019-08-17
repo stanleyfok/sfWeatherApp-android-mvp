@@ -1,5 +1,6 @@
 package com.example.sfweather.features.weatherHistory.adapters
 
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,7 @@ class WeatherHistoryRecycleViewAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = myDataset[position]
         holder.mIdView.text = item.cityName
-        holder.mContentView.text = item.timestamp.toString()
+        holder.mContentView.text = DateFormat.format("yyyy-mm-dd hh:mm:ss", item.timestamp * 1000L).toString()
 
         with(holder.mView) {
             tag = item
@@ -46,11 +47,7 @@ class WeatherHistoryRecycleViewAdapter(
     override fun getItemCount() = myDataset.size
 
     inner class MyViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
-
-        override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
-        }
+        val mIdView: TextView = mView.cityName
+        val mContentView: TextView = mView.date
     }
 }

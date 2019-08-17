@@ -113,7 +113,7 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
 
     override fun updateView() {
         this.state?.let {
-            val displayTemp = WeatherUtils.kelvinToCelsius(it.temperature).roundToInt().toString() + "°"
+            val displayTemp = String.format("%.1f", WeatherUtils.kelvinToCelsius(it.temperature)) + "°"
 
             this.cityNameLabel.text = it.cityName
             this.temperatureLabel.text = displayTemp

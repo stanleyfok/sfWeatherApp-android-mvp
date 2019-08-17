@@ -8,12 +8,10 @@
         tools:context=".features.weatherHistory.WeatherHistoryFragment"
 >
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/weatherHistoryRecycleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/weather_history_item"
-    />
+            android:id="@+id/weatherHistoryRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/weather_history_item"
+            tools:layout_editor_absoluteX="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
