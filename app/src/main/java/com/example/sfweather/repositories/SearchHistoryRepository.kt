@@ -1,45 +1,37 @@
 package com.example.sfweather.repositories
 
-import android.content.Context
-import androidx.room.Room
-import com.example.sfweather.databases.AppDB
+import com.example.sfweather.databases.SearchHistoryDAO
 import com.example.sfweather.models.SearchHistory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import org.koin.core.inject
+import org.koin.core.KoinComponent
 
-class SearchHistoryRepository {
+class SearchHistoryRepository: KoinComponent {
 
-    private val DB_NAME = "searchHistory"
-    private var database: AppDB
-
-    constructor(context: Context) {
-        this.database = Room.databaseBuilder(
-            context,
-            AppDB::class.java, DB_NAME
-        ).build()
-    }
+    private val dao: SearchHistoryDAO by inject()
 
     suspend fun getAll(): List<SearchHistory> {
         return GlobalScope.async {
-            database.searchHistoryDao().getAll()
+            dao.getAll()
         }.await()
     }
 
     fun insert(searchHistory: SearchHistory):Job {
         return GlobalScope.launch {
-            val count = database.searchHistoryDao().getCountByCityId(searchHistory.cityId)
+            val count = dao.getCountByCityId(searchHistory.cityId)
 
             if (count == 0) {
-                database.searchHistoryDao().insert(searchHistory)
+                dao.insert(searchHistory)
             }
         }
     }
 
     fun deleteByCityId(cityId: Int):Job {
         return GlobalScope.launch {
-            database.searchHistoryDao().deleteByCityId(cityId)
+            dao.deleteByCityId(cityId)
         }
     }
 }

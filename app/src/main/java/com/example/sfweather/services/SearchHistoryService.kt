@@ -1,18 +1,12 @@
 package com.example.sfweather.services
 
-import android.content.Context
 import com.example.sfweather.models.SearchHistory
 import com.example.sfweather.repositories.SearchHistoryRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class SearchHistoryService {
-    private var searchHistoryRepository: SearchHistoryRepository
-
-    constructor(context: Context) {
-        this.searchHistoryRepository = SearchHistoryRepository(context)
-    }
+class SearchHistoryService():KoinComponent {
+    private val searchHistoryRepository: SearchHistoryRepository by inject()
 
     suspend fun getAll():List<SearchHistory> {
         return searchHistoryRepository.getAll()
