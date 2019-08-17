@@ -4,7 +4,7 @@ import com.example.sfweather.models.OWApiError
 import com.example.sfweather.models.OWResult
 import com.example.sfweather.models.SearchHistory
 import com.example.sfweather.features.weatherDetails.services.OWService
-import com.example.sfweather.features.common.services.SearchHistoryService
+import com.example.sfweather.common.services.SearchHistoryService
 import kotlinx.coroutines.*
 import retrofit2.Response
 import org.koin.core.KoinComponent

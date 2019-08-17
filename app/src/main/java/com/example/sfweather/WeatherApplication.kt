@@ -2,10 +2,10 @@ package com.example.sfweather
 
 import android.app.Application
 import androidx.room.Room
-import com.example.sfweather.databases.AppDB
-import com.example.sfweather.features.common.repositories.SearchHistoryRepository
+import com.example.sfweather.common.databases.AppDB
+import com.example.sfweather.common.repositories.SearchHistoryRepository
 import com.example.sfweather.features.weatherDetails.services.OWService
-import com.example.sfweather.features.common.services.SearchHistoryService
+import com.example.sfweather.common.services.SearchHistoryService
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module

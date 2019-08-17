@@ -1,4 +1,4 @@
-package com.example.sfweather.databases
+package com.example.sfweather.common.databases
 
 import androidx.room.Dao
 import androidx.room.Insert

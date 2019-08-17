@@ -1,10 +1,9 @@
-package com.example.sfweather.features.common.repositories
+package com.example.sfweather.common.repositories
 
-import com.example.sfweather.databases.SearchHistoryDAO
+import com.example.sfweather.common.databases.SearchHistoryDAO
 import com.example.sfweather.models.SearchHistory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.core.inject
 import org.koin.core.KoinComponent
