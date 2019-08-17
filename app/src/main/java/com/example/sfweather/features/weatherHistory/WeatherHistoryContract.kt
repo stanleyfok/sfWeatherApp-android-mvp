@@ -5,10 +5,16 @@ import com.example.sfweather.models.SearchHistory
 interface WeatherHistoryContract {
     interface View {
         fun updateView(searchHistories: List<SearchHistory>)
-        fun onListFragmentInteraction(searchHistory: SearchHistory)
+        fun onItemViewClick(searchHistory: SearchHistory)
+        fun onItemViewSwipe(searchHistory: SearchHistory)
     }
 
     interface Presenter {
         suspend fun fetchAllSearchHistories()
+        fun deleteSearchHistory(searchHistory: SearchHistory)
+    }
+
+    interface Adapter {
+        fun removeAt(position: Int)
     }
 }

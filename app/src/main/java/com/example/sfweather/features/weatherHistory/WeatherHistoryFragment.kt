@@ -15,25 +15,28 @@ import com.example.sfweather.models.SearchHistory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.content.Intent
+import androidx.recyclerview.widget.ItemTouchHelper
 import kotlinx.android.synthetic.main.fragment_weather_history.*
+import kotlinx.coroutines.Dispatchers
+import pl.kitek.rvswipetodelete.SwipeToDeleteCallback
 
 class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: WeatherHistoryRecycleViewAdapter
     private lateinit var presenter: WeatherHistoryContract.Presenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view:View = inflater.inflate(R.layout.fragment_weather_history, container, false)
         this.presenter = WeatherHistoryPresenter(this);
 
-        GlobalScope.launch() {
+        GlobalScope.launch(Dispatchers.Main) {
             presenter.fetchAllSearchHistories()
         }
 
         return view
     }
 
-    override fun onListFragmentInteraction(searchHistory: SearchHistory) {
+    override fun onItemViewClick(searchHistory: SearchHistory) {
         targetFragment?.let {
             val intent = Intent(context, WeatherHistoryFragment::class.java)
             intent.putExtra("cityId", searchHistory.cityId);
@@ -44,12 +47,29 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
         (activity as MainActivity).popStack()
     }
 
+    override fun onItemViewSwipe(searchHistory: SearchHistory) {
+        GlobalScope.launch() {
+            presenter.deleteSearchHistory(searchHistory)
+        }
+    }
+
     override fun updateView(searchHistories: List<SearchHistory>) {
-        viewAdapter = WeatherHistoryRecycleViewAdapter(searchHistories, this)
+        val list = searchHistories.toMutableList()
+        viewAdapter = WeatherHistoryRecycleViewAdapter(list, this)
 
         recyclerView = this.weatherHistoryRecycleView.apply {
             setHasFixedSize(true)
             adapter = viewAdapter
         }
+
+        val swipeHandler = object : SwipeToDeleteCallback(activity!!.applicationContext) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = recyclerView.adapter as WeatherHistoryRecycleViewAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 }

@@ -25,7 +25,9 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     override suspend fun fetchLastStoredWeather() {
         val searchHistory = searchHistoryService.getLatest()
 
-        this.fetchWeatherByCityId(searchHistory.cityId)
+        if (searchHistory != null) {
+            this.fetchWeatherByCityId(searchHistory.cityId)
+        }
     }
 
     override fun fetchWeatherByCityName(cityName: String) {

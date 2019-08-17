@@ -4,22 +4,24 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.WeatherHistoryContract
 import com.example.sfweather.models.SearchHistory
+import kotlinx.android.synthetic.main.weather_history_item.view.*
 
 class WeatherHistoryRecycleViewAdapter(
-    private val searchHistories: List<SearchHistory>,
-    private val mListener: WeatherHistoryContract.View
-) : RecyclerView.Adapter<WeatherHistoryViewHolder>() {
+    private val searchHistories: MutableList<SearchHistory>,
+    private val parentView: WeatherHistoryContract.View
+) : RecyclerView.Adapter<WeatherHistoryRecycleViewAdapter.WeatherHistoryViewHolder>(), WeatherHistoryContract.Adapter {
     private val mOnClickListener: View.OnClickListener
 
     init {
         mOnClickListener = View.OnClickListener { v ->
             val searchHistory = v.tag as SearchHistory
 
-            mListener?.onListFragmentInteraction(searchHistory)
+            parentView.onItemViewClick(searchHistory)
         }
     }
 
@@ -42,5 +44,19 @@ class WeatherHistoryRecycleViewAdapter(
             tag = searchHistory
             setOnClickListener(mOnClickListener)
         }
+    }
+
+    override fun removeAt(position: Int) {
+        val searchHistory = searchHistories[position]
+        parentView.onItemViewSwipe(searchHistory)
+
+        searchHistories.removeAt(position)
+
+        notifyItemRemoved(position)
+    }
+
+    inner class WeatherHistoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val cityNameLabel: TextView = itemView.cityNameLabel
+        val dateLabel: TextView = itemView.dateLabel
     }
 }
