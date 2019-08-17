@@ -43,13 +43,16 @@ class WeatherDetailsPresenter: KoinComponent {
     }
 
     private fun fetchWeather(call: Call<OWResult>) {
+        this.view.setIsLoading(true)
+
         call.enqueue(object: Callback<OWResult> {
             override fun onResponse(call: Call<OWResult>, response: Response<OWResult>) {
                 if (response.isSuccessful) {
                     val owResult = response.body()!!
 
                     // update view
-                    updateView(owResult)
+                    val weatherDetailsState = WeatherDetailsState(owResult)
+                    view.setState(weatherDetailsState)
 
                     // store to db
                     insertSearchHistory(owResult)
@@ -62,6 +65,8 @@ class WeatherDetailsPresenter: KoinComponent {
                         view.showErrorMessage(if (!e.message.isNullOrEmpty()) e.message!! else "Unknown Error")
                     }
                 }
+
+                view.setIsLoading(false)
             }
 
             override fun onFailure(call: Call<OWResult>, t: Throwable) {
@@ -69,18 +74,9 @@ class WeatherDetailsPresenter: KoinComponent {
 
                 //TODO: more detailed error?
                 view.showErrorMessage("Unknown Error")
+                view.setIsLoading(false)
             }
         })
-    }
-
-    private fun updateView(owResult: OWResult) {
-        val weatherDetailsState = WeatherDetailsState(
-            owResult.name,
-            owResult.main.temp,
-            owResult.weather[0].main
-        )
-
-        view.setState(weatherDetailsState)
     }
 
     private fun insertSearchHistory(owResult: OWResult) {

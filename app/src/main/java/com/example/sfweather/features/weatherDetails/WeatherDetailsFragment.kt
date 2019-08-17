@@ -13,6 +13,7 @@ import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_detail.*
 import android.content.Intent
+import android.widget.ProgressBar
 import com.example.sfweather.constants.AppConstants
 import com.example.sfweather.utils.WeatherUtils
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ import kotlin.math.roundToInt
 class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsPresenter
     private var state:WeatherDetailsState? = null
+    private var cityIdToFetch:Int = -1
 
     //region life cycle
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,8 +41,14 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
         viewHistoryButton.setOnClickListener(this)
         searchView.setOnQueryTextListener(this)
 
-        if (state != null) {
+        if (this.state != null) {
             this.updateView()
+
+            if (this.cityIdToFetch != -1) {
+                this.presenter.fetchWeatherByCityId(cityIdToFetch)
+
+                this.cityIdToFetch = -1;
+            }
         } else {
             GlobalScope.launch(Dispatchers.Main) {
                 presenter.fetchLastStoredWeather()
@@ -53,11 +61,10 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AppConstants.REQ_CODE_FRAGMENT_SEARCH_HISTORY) {
-                val cityId = data!!.getIntExtra("cityId", -1)
 
-                if (cityId != -1) {
-                    this.presenter.fetchWeatherByCityId(cityId)
-                }
+                // bad code, however onActivityResult starts before onViewCreated
+                // store to use in onViewCreated
+                this.cityIdToFetch = data!!.getIntExtra("cityId", -1)
             }
         }
     }
@@ -98,6 +105,10 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsView, View.OnClickListe
         this.state = state
 
         this.updateView()
+    }
+
+    override fun setIsLoading(bool: Boolean) {
+        this.progressBar.visibility = if (bool) ProgressBar.VISIBLE else ProgressBar.INVISIBLE
     }
 
     override fun updateView() {
