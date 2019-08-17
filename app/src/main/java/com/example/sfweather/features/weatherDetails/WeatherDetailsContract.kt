@@ -8,7 +8,7 @@ interface WeatherDetailsContract {
     }
 
     interface Presenter {
-        suspend fun fetchLastStoredWeather()
+        fun fetchLastStoredWeather()
         fun fetchWeatherByCityName(cityName: String)
         fun fetchWeatherByCityId(cityId: Int)
     }

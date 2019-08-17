@@ -2,9 +2,12 @@ package com.example.sfweather.services
 
 import com.example.sfweather.BuildConfig
 import com.example.sfweather.models.OWResult
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,17 +15,29 @@ import retrofit2.http.Query
 interface OWApiService {
 
     @GET("weather")
-    fun findByCityName(@Query("q") cityName: String): Call<OWResult>
+    suspend fun findByCityName(@Query("q") cityName: String): Response<OWResult>
 
     @GET("weather")
-    fun findByCityId(@Query("id") cityId: Int): Call<OWResult>
+    suspend fun findByCityId(@Query("id") cityId: Int): Response<OWResult>
 
     companion object Factory {
         fun create(): OWApiService {
-            val owServiceInterceptor = OWApiServiceInterceptor()
+            val interceptor = object: Interceptor {
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    var request = chain.request()
+
+                    val newUrl: HttpUrl = request.url.newBuilder().addQueryParameter("appId", BuildConfig.OPENWEATHER_API_TOKEN).build()
+
+                    request = request.newBuilder()
+                        .url(newUrl)
+                        .build()
+
+                    return chain.proceed(request)
+                }
+            }
 
             val okHttpClient = OkHttpClient().newBuilder().
-                addInterceptor(owServiceInterceptor)
+                addInterceptor(interceptor)
                 .build()
 
             val retrofit = Retrofit.Builder()

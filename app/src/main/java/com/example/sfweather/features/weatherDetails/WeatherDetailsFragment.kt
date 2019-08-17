@@ -16,9 +16,6 @@ import android.content.Intent
 import android.widget.ProgressBar
 import com.example.sfweather.constants.AppConstants
 import com.example.sfweather.utils.WeatherUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnClickListener, SearchView.OnQueryTextListener {
     private lateinit var presenter: WeatherDetailsContract.Presenter
@@ -42,9 +39,7 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
         searchView.setOnQueryTextListener(this)
 
         if (!isRecentSearchLoaded) {
-            GlobalScope.launch(Dispatchers.Main) {
-                presenter.fetchLastStoredWeather()
-            }
+            presenter.fetchLastStoredWeather()
 
             isRecentSearchLoaded = true
         } else {

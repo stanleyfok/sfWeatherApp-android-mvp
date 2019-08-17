@@ -12,12 +12,9 @@ import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.adapters.WeatherHistoryRecycleViewAdapter
 import com.example.sfweather.models.SearchHistory
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import android.content.Intent
 import androidx.recyclerview.widget.ItemTouchHelper
 import kotlinx.android.synthetic.main.fragment_weather_history.*
-import kotlinx.coroutines.Dispatchers
 import pl.kitek.rvswipetodelete.SwipeToDeleteCallback
 
 class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
@@ -29,14 +26,16 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
         val view:View = inflater.inflate(R.layout.fragment_weather_history, container, false)
         this.presenter = WeatherHistoryPresenter(this);
 
-        GlobalScope.launch(Dispatchers.Main) {
-            presenter.fetchAllSearchHistories()
-        }
-
         return view
     }
 
-    override fun onItemViewClick(searchHistory: SearchHistory) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        presenter.fetchAllSearchHistories()
+    }
+
+        override fun onItemViewClick(searchHistory: SearchHistory) {
         targetFragment?.let {
             val intent = Intent(context, WeatherHistoryFragment::class.java)
             intent.putExtra("cityId", searchHistory.cityId);
@@ -48,9 +47,7 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
     }
 
     override fun onItemViewSwipe(searchHistory: SearchHistory) {
-        GlobalScope.launch() {
-            presenter.deleteSearchHistory(searchHistory)
-        }
+        presenter.deleteSearchHistory(searchHistory)
     }
 
     override fun updateView(searchHistories: List<SearchHistory>) {

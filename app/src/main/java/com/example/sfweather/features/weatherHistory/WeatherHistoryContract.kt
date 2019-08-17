@@ -10,7 +10,7 @@ interface WeatherHistoryContract {
     }
 
     interface Presenter {
-        suspend fun fetchAllSearchHistories()
+        fun fetchAllSearchHistories()
         fun deleteSearchHistory(searchHistory: SearchHistory)
     }
 

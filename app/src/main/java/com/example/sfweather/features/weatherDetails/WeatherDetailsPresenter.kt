@@ -5,8 +5,9 @@ import com.example.sfweather.models.OWResult
 import com.example.sfweather.models.SearchHistory
 import com.example.sfweather.services.OWApiService
 import com.example.sfweather.services.SearchHistoryService
-import retrofit2.Call
-import retrofit2.Callback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -22,63 +23,78 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         this.view = view
     }
 
-    override suspend fun fetchLastStoredWeather() {
-        val searchHistory = searchHistoryService.getLatest()
+    override fun fetchLastStoredWeather() {
+        GlobalScope.launch {
+            val searchHistory = searchHistoryService.getLatest()
 
-        if (searchHistory != null) {
-            this.fetchWeatherByCityId(searchHistory.cityId)
+            if (searchHistory != null) {
+                fetchWeatherByCityId(searchHistory.cityId)
+            }
         }
     }
 
     override fun fetchWeatherByCityName(cityName: String) {
-        val call = owApiService.findByCityName(cityName)
+        this.setViewLoading(true)
 
-        fetchWeather(call)
+        GlobalScope.launch {
+            val response = owApiService.findByCityName(cityName)
+
+            handleResponse(response)
+        }
     }
 
     override fun fetchWeatherByCityId(cityId: Int) {
-        val call = owApiService.findByCityId(cityId)
+        this.setViewLoading(true)
 
-        fetchWeather(call)
+        GlobalScope.launch {
+            val response = owApiService.findByCityId(cityId)
+
+            handleResponse(response)
+        }
     }
 
-    private fun fetchWeather(call: Call<OWResult>) {
-        this.view.setIsLoading(true)
+    private fun handleResponse(response: Response<OWResult>) {
+        try {
+            if (response.isSuccessful) {
+                val owResult = response.body()!!
 
-        call.enqueue(object: Callback<OWResult> {
-            override fun onResponse(call: Call<OWResult>, response: Response<OWResult>) {
-                if (response.isSuccessful) {
-                    val owResult = response.body()!!
+                // update view
 
-                    // update view
-                    val weatherDetailsData = WeatherDetailsData(owResult)
-                    view.updateView(weatherDetailsData)
+                val weatherDetailsData = WeatherDetailsData(owResult)
+                updateView(weatherDetailsData)
 
-                    // store to db
-                    insertSearchHistory(owResult)
-                } else {
-                    try {
-                        val apiError = OWApiError.createFromResponse(response.errorBody()!!)
+                // store to db
+                insertSearchHistory(owResult)
+            } else {
+                try {
+                    val apiError = OWApiError.createFromResponse(response.errorBody()!!)
 
-                        view.showErrorMessage(apiError.message)
-                    } catch (e:Exception) {
-                        view.showErrorMessage(if (!e.message.isNullOrEmpty()) e.message!! else "Unknown Error")
-                    }
+                    view.showErrorMessage(apiError.message)
+                } catch (e:Exception) {
+                    view.showErrorMessage(if (!e.message.isNullOrEmpty()) e.message!! else "Unknown Error")
                 }
-
-                view.setIsLoading(false)
             }
-
-            override fun onFailure(call: Call<OWResult>, t: Throwable) {
-                t.message?.let {
-                    view.showErrorMessage(it)
-                } ?: run {
-                    view.showErrorMessage("Unknown Error")
-                }
-
-                view.setIsLoading(false)
+        } catch (e: Exception) {
+            e.message?.let {
+                view.showErrorMessage(it)
+            } ?: run {
+                view.showErrorMessage("Unknown Error")
             }
-        })
+        } finally {
+            setViewLoading(false)
+        }
+    }
+
+    private fun setViewLoading(bool: Boolean) {
+        GlobalScope.launch(Dispatchers.Main) {
+            view.setIsLoading(bool)
+        }
+    }
+
+    private fun updateView(weatherDetailsData: WeatherDetailsData) {
+        GlobalScope.launch(Dispatchers.Main) {
+            view.updateView(weatherDetailsData)
+        }
     }
 
     private fun insertSearchHistory(owResult: OWResult) {
