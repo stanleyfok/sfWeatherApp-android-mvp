@@ -36,7 +36,7 @@ class WeatherHistoryRecycleViewAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = myDataset[position]
         holder.mIdView.text = item.cityName
-        holder.mContentView.text = DateFormat.format("yyyy-mm-dd hh:mm:ss", item.timestamp * 1000L).toString()
+        holder.mContentView.text = DateFormat.format("yyyy-MM-dd hh:mm:ss", item.timestamp * 1000L).toString()
 
         with(holder.mView) {
             tag = item
