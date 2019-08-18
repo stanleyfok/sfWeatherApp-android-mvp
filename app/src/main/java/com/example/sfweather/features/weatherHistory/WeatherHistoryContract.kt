@@ -1,5 +1,6 @@
 package com.example.sfweather.features.weatherHistory
 
+import com.example.sfweather.base.BasePresenter
 import com.example.sfweather.models.SearchHistory
 
 interface WeatherHistoryContract {
@@ -9,7 +10,7 @@ interface WeatherHistoryContract {
         fun onItemViewSwipe(searchHistory: SearchHistory)
     }
 
-    interface Presenter {
+    interface Presenter:BasePresenter<View> {
         fun fetchAllSearchHistories()
         fun deleteSearchHistory(searchHistory: SearchHistory)
     }

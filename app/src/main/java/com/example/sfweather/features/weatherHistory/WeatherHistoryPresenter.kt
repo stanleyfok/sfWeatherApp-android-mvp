@@ -7,12 +7,16 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
-    private var view: WeatherHistoryContract.View
+    private var view:WeatherHistoryContract.View? = null
 
     private val searchHistoryService: SearchHistoryService by inject()
 
-    constructor(view: WeatherHistoryContract.View) {
+    override fun attachView(view: WeatherHistoryContract.View) {
         this.view = view
+    }
+
+    override fun detachView() {
+        this.view = null
     }
 
     override fun fetchAllSearchHistories() {
@@ -21,7 +25,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
                 searchHistoryService.getAll()
             }
 
-            view.updateView(searchHistories)
+            view?.updateView(searchHistories)
         }
     }
 
@@ -30,4 +34,5 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
             searchHistoryService.deleteByCityId(searchHistory.cityId)
         }
     }
+    //endregion
 }

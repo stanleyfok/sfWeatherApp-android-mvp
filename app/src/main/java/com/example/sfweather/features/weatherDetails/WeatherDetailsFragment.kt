@@ -18,7 +18,7 @@ import com.example.sfweather.constants.AppConstants
 import com.example.sfweather.utils.WeatherUtils
 
 class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnClickListener, SearchView.OnQueryTextListener {
-    private lateinit var presenter: WeatherDetailsContract.Presenter
+    private var presenter: WeatherDetailsContract.Presenter = WeatherDetailsPresenter()
 
     private var isRecentSearchLoaded:Boolean = false
     private var cityIdToFetch:Int = -1
@@ -27,7 +27,7 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view:View = inflater.inflate(R.layout.fragment_weather_detail, container, false)
 
-        this.presenter = WeatherDetailsPresenter(this)
+        this.presenter.attachView(this)
 
         return view
     }
@@ -49,6 +49,12 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
                 this.cityIdToFetch = -1;
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        this.presenter.detachView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,5 +1,7 @@
 package com.example.sfweather.features.weatherDetails
 
+import com.example.sfweather.base.BasePresenter
+
 interface WeatherDetailsContract {
     interface View {
         fun setIsLoading(bool: Boolean)
@@ -7,7 +9,7 @@ interface WeatherDetailsContract {
         fun showErrorMessage(errorMessage: String)
     }
 
-    interface Presenter {
+    interface Presenter: BasePresenter<View> {
         fun fetchLastStoredWeather()
         fun fetchWeatherByCityName(cityName: String)
         fun fetchWeatherByCityId(cityId: Int)

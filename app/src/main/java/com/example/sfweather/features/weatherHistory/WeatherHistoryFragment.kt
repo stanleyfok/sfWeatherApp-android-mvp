@@ -18,13 +18,13 @@ import kotlinx.android.synthetic.main.fragment_weather_history.*
 import pl.kitek.rvswipetodelete.SwipeToDeleteCallback
 
 class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: WeatherHistoryRecycleViewAdapter
-    private lateinit var presenter: WeatherHistoryContract.Presenter
+    private var presenter: WeatherHistoryContract.Presenter = WeatherHistoryPresenter()
 
+    //region life cycle
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view:View = inflater.inflate(R.layout.fragment_weather_history, container, false)
-        this.presenter = WeatherHistoryPresenter(this);
+
+        this.presenter.attachView(this)
 
         return view
     }
@@ -35,26 +35,19 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
         presenter.fetchAllSearchHistories()
     }
 
-        override fun onItemViewClick(searchHistory: SearchHistory) {
-        targetFragment?.let {
-            val intent = Intent(context, WeatherHistoryFragment::class.java)
-            intent.putExtra("cityId", searchHistory.cityId);
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-            it.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent);
-        }
-
-        (activity as MainActivity).popStack()
+        this.presenter.detachView()
     }
+    //endregion
 
-    override fun onItemViewSwipe(searchHistory: SearchHistory) {
-        presenter.deleteSearchHistory(searchHistory)
-    }
-
+    //region interface method
     override fun updateView(searchHistories: List<SearchHistory>) {
         val list = searchHistories.toMutableList()
-        viewAdapter = WeatherHistoryRecycleViewAdapter(list, this)
+        val viewAdapter = WeatherHistoryRecycleViewAdapter(list, this)
 
-        recyclerView = this.weatherHistoryRecycleView.apply {
+        val recyclerView = this.weatherHistoryRecycleView.apply {
             setHasFixedSize(true)
             adapter = viewAdapter
         }
@@ -69,4 +62,20 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
+
+    override fun onItemViewClick(searchHistory: SearchHistory) {
+        targetFragment?.let {
+            val intent = Intent(context, WeatherHistoryFragment::class.java)
+            intent.putExtra("cityId", searchHistory.cityId);
+
+            it.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent);
+        }
+
+        (activity as MainActivity).popStack()
+    }
+
+    override fun onItemViewSwipe(searchHistory: SearchHistory) {
+        presenter.deleteSearchHistory(searchHistory)
+    }
+    //endregion
 }
