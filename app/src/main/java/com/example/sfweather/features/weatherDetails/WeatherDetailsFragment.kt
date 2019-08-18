@@ -35,13 +35,13 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewHistoryButton.setOnClickListener(this)
-        searchView.setOnQueryTextListener(this)
+        this.viewHistoryButton.setOnClickListener(this)
+        this.searchView.setOnQueryTextListener(this)
 
         if (!isRecentSearchLoaded) {
-            presenter.fetchLastStoredWeather()
+            this.presenter.fetchLastStoredWeather()
 
-            isRecentSearchLoaded = true
+            this.isRecentSearchLoaded = true
         } else {
             if (this.cityIdToFetch != -1) {
                 this.presenter.fetchWeatherByCityId(cityIdToFetch)

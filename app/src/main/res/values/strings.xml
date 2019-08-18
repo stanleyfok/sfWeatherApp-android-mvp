@@ -3,5 +3,7 @@
     <string name="WEATHER_DETAILS_BUTTON_VIEW_HISTORY">View History</string>
     <string name="WEATHER_DETAILS_SEARCH_BAR_HINT">Search for city name</string>
     <string name="WEATHER_HISTORY_TOOLBAR_TITLE">Search History</string>
+    <string name="WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT">Edit</string>
+    <string name="WEATHER_HISTORY_TOOLBAR_BUTTON_DONE">Done</string>
     <string name="WEATHER_HISTORY_NO_RESULT_FOUND">No search history is found</string>
 </resources>

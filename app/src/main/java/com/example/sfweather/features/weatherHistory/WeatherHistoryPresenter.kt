@@ -8,8 +8,9 @@ import org.koin.core.inject
 
 class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     private var view:WeatherHistoryContract.View? = null
-
     private val searchHistoryService: SearchHistoryService by inject()
+
+    private var searchHistories: MutableList<SearchHistory>? = null
 
     override fun attachView(view: WeatherHistoryContract.View) {
         this.view = view
@@ -19,29 +20,60 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
         this.view = null
     }
 
-    override fun fetchAllSearchHistories() {
+    override fun onViewCreated() {
         CoroutineScope(Dispatchers.Main).launch {
-            val searchHistories = withContext(Dispatchers.IO) {
-                searchHistoryService.getAll()
+            searchHistories = withContext(Dispatchers.IO) {
+                searchHistoryService.getAll().toMutableList()
             }
 
-            view?.updateView(searchHistories)
+            view?.reloadRecyclerView()
         }
     }
 
-    override fun deleteSearchHistory(searchHistory: SearchHistory) {
-        CoroutineScope(Dispatchers.Main).launch {
+    override fun getAllSearchHistories(): List<SearchHistory>? {
+        return this.searchHistories
+    }
 
-            withContext(Dispatchers.IO) {
-                searchHistoryService.deleteByCityId(searchHistory.cityId)
+    override fun getSearchHistoryAtPosition(position: Int): SearchHistory? {
+        this.searchHistories?.let {
+            if (position < it.size) {
+                return it[position]
             }
+        }
 
-            val count = withContext(Dispatchers.IO) {
-                searchHistoryService.countAll()
-            }
+        return null
+    }
 
-            if (count == 0) {
-                view?.updateView(null)
+    override fun getSearchHistoryCount():Int {
+        this.searchHistories?.let {
+            return it.size
+        }
+
+        return 0
+    }
+
+    override fun selectSearchHistoryAtPosition(position: Int) {
+        val searchHistory = this.getSearchHistoryAtPosition(position)
+
+        if (searchHistory != null) {
+            this.view?.onItemViewClick(searchHistory)
+        }
+    }
+
+    override fun removeSearchHistoryAtPosition(position: Int) {
+        val searchHistory = getSearchHistoryAtPosition(position)
+
+        if (searchHistory != null) {
+            CoroutineScope(Dispatchers.Main).launch {
+                val deleteCount = withContext(Dispatchers.IO) {
+                    searchHistoryService.deleteByCityId(searchHistory.cityId)
+                }
+
+                if (deleteCount > 0) {
+                    searchHistories!!.removeAt(position)
+
+                    view?.reloadRecyclerView()
+                }
             }
         }
     }

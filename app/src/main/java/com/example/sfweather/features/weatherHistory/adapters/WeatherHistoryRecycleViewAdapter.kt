@@ -8,20 +8,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.WeatherHistoryContract
-import com.example.sfweather.models.SearchHistory
 import kotlinx.android.synthetic.main.weather_history_item.view.*
 
 class WeatherHistoryRecycleViewAdapter(
-    private val searchHistories: MutableList<SearchHistory>,
-    private val parentView: WeatherHistoryContract.View
-) : RecyclerView.Adapter<WeatherHistoryRecycleViewAdapter.WeatherHistoryViewHolder>(), WeatherHistoryContract.Adapter {
-    private val mOnClickListener: View.OnClickListener
+    private val presenter: WeatherHistoryContract.Presenter
+) : RecyclerView.Adapter<WeatherHistoryRecycleViewAdapter.WeatherHistoryViewHolder>() {
+    private val onClickListener: View.OnClickListener
 
     init {
-        mOnClickListener = View.OnClickListener { v ->
-            val searchHistory = v.tag as SearchHistory
+        onClickListener = View.OnClickListener { v ->
+            val position = v.tag as Int
 
-            parentView.onItemViewClick(searchHistory)
+            this.presenter.selectSearchHistoryAtPosition(position)
         }
     }
 
@@ -32,27 +30,20 @@ class WeatherHistoryRecycleViewAdapter(
         )
     }
 
-    override fun getItemCount() = searchHistories.size
+    override fun getItemCount() = this.presenter.getSearchHistoryCount()
 
     override fun onBindViewHolder(holder: WeatherHistoryViewHolder, position: Int) {
-        val searchHistory = searchHistories[position]
+        val searchHistory = this.presenter.getSearchHistoryAtPosition(position)
 
-        holder.cityNameLabel.text = searchHistory.cityName
-        holder.dateLabel.text = DateFormat.format("yyyy-MM-dd hh:mm:ss", searchHistory.timestamp * 1000L).toString()
+        if (searchHistory != null) {
+            holder.cityNameLabel.text = searchHistory.cityName
+            holder.dateLabel.text = DateFormat.format("yyyy-MM-dd hh:mm:ss", searchHistory.timestamp * 1000L).toString()
 
-        with(holder.itemView) {
-            tag = searchHistory
-            setOnClickListener(mOnClickListener)
+            with(holder.itemView) {
+                tag = position
+                setOnClickListener(onClickListener)
+            }
         }
-    }
-
-    override fun removeAt(position: Int) {
-        val searchHistory = searchHistories[position]
-        parentView.onItemViewSwipe(searchHistory)
-
-        searchHistories.removeAt(position)
-
-        notifyItemRemoved(position)
     }
 
     inner class WeatherHistoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

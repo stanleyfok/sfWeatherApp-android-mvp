@@ -19,6 +19,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     override fun attachView(view: WeatherDetailsContract.View) {
         this.view = view
     }
+
     override fun detachView() {
         this.view = null
     }
@@ -97,7 +98,9 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         val timestamp = System.currentTimeMillis() / 1000;
         val searchHistory = SearchHistory(owResult.id, owResult.name, timestamp)
 
-        this.searchHistoryService.insert(searchHistory)
+        CoroutineScope(Dispatchers.IO).launch {
+            searchHistoryService.insert(searchHistory)
+        }
     }
     //endregion
 }

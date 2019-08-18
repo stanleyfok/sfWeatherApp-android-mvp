@@ -15,7 +15,16 @@
             android:minHeight="?attr/actionBarSize"
             android:id="@+id/toolbar"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/WEATHER_HISTORY_TOOLBAR_TITLE"/>
+            app:title="@string/WEATHER_HISTORY_TOOLBAR_TITLE">
+        <Button
+                android:id="@+id/editButton"
+                android:text="@string/WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textColor="@color/colorAccent"
+                android:background="@android:color/transparent"/>
+    </androidx.appcompat.widget.Toolbar>
     <TextView
             android:id="@+id/emptyResultText"
             android:text="@string/WEATHER_HISTORY_NO_RESULT_FOUND"

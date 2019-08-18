@@ -12,10 +12,6 @@ class SearchHistoryService():KoinComponent {
         return searchHistoryRepository.getAll()
     }
 
-    fun countAll():Int {
-        return searchHistoryRepository.countAll()
-    }
-
     fun getLatest():SearchHistory {
         return searchHistoryRepository.getLatest()
     }
@@ -24,7 +20,7 @@ class SearchHistoryService():KoinComponent {
         searchHistoryRepository.upsert(searchHistory)
     }
 
-    fun deleteByCityId(cityId: Int) {
-        searchHistoryRepository.deleteByCityId(cityId)
+    fun deleteByCityId(cityId: Int):Int {
+        return searchHistoryRepository.deleteByCityId(cityId)
     }
 }

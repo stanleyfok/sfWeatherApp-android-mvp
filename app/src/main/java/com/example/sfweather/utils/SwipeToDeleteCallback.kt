@@ -1,4 +1,4 @@
-package pl.kitek.rvswipetodelete
+package com.example.sfweather.utils
 
 import android.content.Context
 import android.graphics.Canvas
