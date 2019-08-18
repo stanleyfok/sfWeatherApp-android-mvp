@@ -16,6 +16,10 @@ class SearchHistoryRepository: KoinComponent {
         return dao.getAll()
     }
 
+    fun countAll(): Int {
+        return dao.countAll()
+    }
+
     fun getLatest(): SearchHistory {
         return dao.getLatest()
     }

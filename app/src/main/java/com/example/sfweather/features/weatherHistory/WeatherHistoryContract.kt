@@ -5,7 +5,7 @@ import com.example.sfweather.models.SearchHistory
 
 interface WeatherHistoryContract {
     interface View {
-        fun updateView(searchHistories: List<SearchHistory>)
+        fun updateView(searchHistories: List<SearchHistory>?)
         fun onItemViewClick(searchHistory: SearchHistory)
         fun onItemViewSwipe(searchHistory: SearchHistory)
     }

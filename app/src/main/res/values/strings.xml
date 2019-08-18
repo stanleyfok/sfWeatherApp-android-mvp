@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">sfWeather</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="WEATHER_DETAILS_BUTTON_VIEW_HISTORY">View History</string>
+    <string name="WEATHER_DETAILS_SEARCH_BAR_HINT">Search for city name</string>
+    <string name="WEATHER_HISTORY_TOOLBAR_TITLE">Search History</string>
+    <string name="WEATHER_HISTORY_NO_RESULT_FOUND">No search history is found</string>
 </resources>

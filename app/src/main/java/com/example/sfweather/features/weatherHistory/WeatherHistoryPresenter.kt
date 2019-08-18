@@ -30,8 +30,19 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     }
 
     override fun deleteSearchHistory(searchHistory: SearchHistory) {
-        CoroutineScope(Dispatchers.IO).launch {
-            searchHistoryService.deleteByCityId(searchHistory.cityId)
+        CoroutineScope(Dispatchers.Main).launch {
+
+            withContext(Dispatchers.IO) {
+                searchHistoryService.deleteByCityId(searchHistory.cityId)
+            }
+
+            val count = withContext(Dispatchers.IO) {
+                searchHistoryService.countAll()
+            }
+
+            if (count == 0) {
+                view?.updateView(null)
+            }
         }
     }
     //endregion

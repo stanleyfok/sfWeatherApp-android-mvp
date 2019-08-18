@@ -43,24 +43,32 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
     //endregion
 
     //region interface method
-    override fun updateView(searchHistories: List<SearchHistory>) {
-        val list = searchHistories.toMutableList()
-        val viewAdapter = WeatherHistoryRecycleViewAdapter(list, this)
+    override fun updateView(searchHistories: List<SearchHistory>?) {
+        if (searchHistories == null || searchHistories.isEmpty()) {
+            this.emptyResultText.visibility = View.VISIBLE
+            this.weatherHistoryRecycleView.visibility = View.GONE
+        } else {
+            this.emptyResultText.visibility = View.GONE
+            this.weatherHistoryRecycleView.visibility = View.VISIBLE
 
-        val recyclerView = this.weatherHistoryRecycleView.apply {
-            setHasFixedSize(true)
-            adapter = viewAdapter
-        }
+            val list = searchHistories.toMutableList()
+            val viewAdapter = WeatherHistoryRecycleViewAdapter(list, this)
 
-        val swipeHandler = object : SwipeToDeleteCallback(activity!!.applicationContext) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = recyclerView.adapter as WeatherHistoryRecycleViewAdapter
-                adapter.removeAt(viewHolder.adapterPosition)
+            this.weatherHistoryRecycleView.apply {
+                setHasFixedSize(true)
+                adapter = viewAdapter
             }
-        }
 
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+            val swipeHandler = object : SwipeToDeleteCallback(activity!!.applicationContext) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val adapter = weatherHistoryRecycleView.adapter as WeatherHistoryRecycleViewAdapter
+                    adapter.removeAt(viewHolder.adapterPosition)
+                }
+            }
+
+            val itemTouchHelper = ItemTouchHelper(swipeHandler)
+            itemTouchHelper.attachToRecyclerView(this.weatherHistoryRecycleView)
+        }
     }
 
     override fun onItemViewClick(searchHistory: SearchHistory) {
