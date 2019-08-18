@@ -1,3 +1,11 @@
 # sfWeatherApp-android-mvp
 
-A simple Android weather app using Openweather API using mvp architecture
+A simple Android weather app using [Openweather API](https://openweathermap.org/api) using mvp architecture
+
+## Technologies
+
+- **MVP** Architecture
+- **Koin** for dependency injection
+- **Coroutine** for concurrency and flow control
+- **Retrofit** for network
+- **Room** for local storage
