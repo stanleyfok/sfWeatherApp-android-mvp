@@ -6,7 +6,7 @@ import com.example.sfweather.models.SearchHistory
 interface WeatherHistoryContract {
     interface View {
         fun reloadRecyclerView()
-        fun onItemViewClick(searchHistory: SearchHistory)
+        fun onSelectSearchHistory(searchHistory: SearchHistory)
     }
 
     interface Presenter:BasePresenter<View> {

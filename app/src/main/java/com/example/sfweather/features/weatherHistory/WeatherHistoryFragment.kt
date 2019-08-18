@@ -85,7 +85,7 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
         }
     }
 
-    override fun onItemViewClick(searchHistory: SearchHistory) {
+    override fun onSelectSearchHistory(searchHistory: SearchHistory) {
         targetFragment?.let {
             val intent = Intent(context, WeatherHistoryFragment::class.java)
             intent.putExtra("cityId", searchHistory.cityId);

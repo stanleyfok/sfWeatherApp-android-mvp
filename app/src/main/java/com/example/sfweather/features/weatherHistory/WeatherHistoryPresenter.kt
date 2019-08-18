@@ -56,7 +56,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
         val searchHistory = this.getSearchHistoryAtPosition(position)
 
         if (searchHistory != null) {
-            this.view?.onItemViewClick(searchHistory)
+            this.view?.onSelectSearchHistory(searchHistory)
         }
     }
 
