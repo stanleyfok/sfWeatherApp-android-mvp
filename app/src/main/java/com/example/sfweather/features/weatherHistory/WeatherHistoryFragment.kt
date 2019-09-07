@@ -58,9 +58,6 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
 
         val swipeHandler = object : SwipeToDeleteCallback(activity!!.applicationContext) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = weatherHistoryRecycleView.adapter as WeatherHistoryRecycleViewAdapter
-                //adapter.removeAt(viewHolder.adapterPosition)
-
                 presenter.removeSearchHistoryAtPosition(viewHolder.adapterPosition)
             }
         }
@@ -107,8 +104,10 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
                     this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_DONE)
                 } else {
                     this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT)
-
                 }
+
+                this.recycleViewAdapter.setIsEdit(this.isEdit)
+                this.reloadRecyclerView()
             }
         }
     }

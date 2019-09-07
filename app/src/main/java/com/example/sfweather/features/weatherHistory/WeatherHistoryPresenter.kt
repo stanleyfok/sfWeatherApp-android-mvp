@@ -22,10 +22,13 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
 
     override fun onViewCreated() {
         CoroutineScope(Dispatchers.Main).launch {
+
             searchHistories = withContext(Dispatchers.IO) {
+                //network or DB
                 searchHistoryService.getAll().toMutableList()
             }
 
+            // ui, main thread
             view?.reloadRecyclerView()
         }
     }

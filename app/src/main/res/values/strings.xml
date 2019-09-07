@@ -6,4 +6,5 @@
     <string name="WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT">Edit</string>
     <string name="WEATHER_HISTORY_TOOLBAR_BUTTON_DONE">Done</string>
     <string name="WEATHER_HISTORY_NO_RESULT_FOUND">No search history is found</string>
+    <string name="WEATHER_HISTORY_ITEM_DELETE">Delete</string>
 </resources>
