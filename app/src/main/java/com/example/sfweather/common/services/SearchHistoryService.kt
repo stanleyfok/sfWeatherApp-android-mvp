@@ -1,6 +1,6 @@
 package com.example.sfweather.common.services
 
-import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.common.models.SearchHistory
 import com.example.sfweather.common.repositories.SearchHistoryRepository
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -12,7 +12,7 @@ class SearchHistoryService():KoinComponent {
         return searchHistoryRepository.getAll()
     }
 
-    fun getLatest():SearchHistory {
+    fun getLatest(): SearchHistory {
         return searchHistoryRepository.getLatest()
     }
 

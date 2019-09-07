@@ -1,8 +1,8 @@
 package com.example.sfweather.features.weatherDetails
 
-import com.example.sfweather.models.OWApiError
-import com.example.sfweather.models.OWResult
-import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.features.weatherDetails.models.OWApiError
+import com.example.sfweather.features.weatherDetails.models.OWResult
+import com.example.sfweather.common.models.SearchHistory
 import com.example.sfweather.features.weatherDetails.services.OWService
 import com.example.sfweather.common.services.SearchHistoryService
 import kotlinx.coroutines.*

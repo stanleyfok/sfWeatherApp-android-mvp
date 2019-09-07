@@ -1,7 +1,7 @@
 package com.example.sfweather.common.repositories
 
 import com.example.sfweather.common.databases.SearchHistoryDAO
-import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.common.models.SearchHistory
 import org.koin.core.inject
 import org.koin.core.KoinComponent
 
