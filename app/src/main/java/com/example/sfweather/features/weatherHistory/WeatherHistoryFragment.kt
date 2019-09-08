@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.fragment_weather_history.view.*
 class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnClickListener {
     private var presenter: WeatherHistoryContract.Presenter = WeatherHistoryPresenter()
     private lateinit var recycleViewAdapter: WeatherHistoryRecycleViewAdapter
-    private var isEdit: Boolean = false
 
     //region life cycle
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -98,15 +97,14 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
     override fun onClick(view: View) {
         when (view.id) {
             R.id.editButton -> {
-                this.isEdit = !this.isEdit
+                this.presenter.isEdit = !this.presenter.isEdit
 
-                if (this.isEdit) {
+                if (this.presenter.isEdit) {
                     this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_DONE)
                 } else {
                     this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT)
                 }
 
-                this.recycleViewAdapter.setIsEdit(this.isEdit)
                 this.reloadRecyclerView()
             }
         }

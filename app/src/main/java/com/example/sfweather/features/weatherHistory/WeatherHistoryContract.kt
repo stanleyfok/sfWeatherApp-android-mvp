@@ -10,6 +10,7 @@ interface WeatherHistoryContract {
     }
 
     interface Presenter:BasePresenter<View> {
+        var isEdit:Boolean
         fun onViewCreated()
         fun getAllSearchHistories(): List<SearchHistory>?
         fun getSearchHistoryAtPosition(position: Int): SearchHistory?
