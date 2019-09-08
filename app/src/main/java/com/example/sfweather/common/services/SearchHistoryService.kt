@@ -16,7 +16,7 @@ class SearchHistoryService():KoinComponent {
         return searchHistoryRepository.getLatest()
     }
 
-    fun insert(searchHistory: SearchHistory) {
+    fun upsert(searchHistory: SearchHistory) {
         searchHistoryRepository.upsert(searchHistory)
     }
 

@@ -99,7 +99,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         val searchHistory = SearchHistory(owResult.id, owResult.name, timestamp)
 
         CoroutineScope(Dispatchers.IO).launch {
-            searchHistoryService.insert(searchHistory)
+            searchHistoryService.upsert(searchHistory)
         }
     }
     //endregion
