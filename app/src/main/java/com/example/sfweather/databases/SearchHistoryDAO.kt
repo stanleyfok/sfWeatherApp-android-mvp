@@ -1,28 +1,28 @@
-package com.example.sfweather.common.databases
+package com.example.sfweather.databases
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.sfweather.common.models.SearchHistory
+import com.example.sfweather.models.SearchHistory
 
 @Dao
 interface SearchHistoryDAO {
     @Query("Select * From searchHistory ORDER BY timestamp DESC")
-    fun getAll(): List<SearchHistory>
+    suspend fun getAll(): List<SearchHistory>
 
     @Query("Select * From searchHistory ORDER BY timestamp DESC LIMIT 1")
-    fun getLatest(): SearchHistory
+    suspend fun getLatest(): SearchHistory
 
     @Query("Select count(cityId) From searchHistory WHERE cityId = :cityId")
-    fun getCountByCityId(cityId: Int):Int
+    suspend fun getCountByCityId(cityId: Int):Int
 
     @Insert
-    fun insert(vararg searchHistory: SearchHistory)
+    suspend fun insert(vararg searchHistory: SearchHistory)
 
     @Update
-    fun update(vararg searchHistory: SearchHistory)
+    suspend fun update(vararg searchHistory: SearchHistory)
 
     @Query("DELETE FROM searchHistory WHERE cityId = :cityId")
-    fun deleteByCityId(cityId: Int):Int
+    suspend fun deleteByCityId(cityId: Int):Int
 }

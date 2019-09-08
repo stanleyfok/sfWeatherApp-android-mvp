@@ -1,14 +1,14 @@
 package com.example.sfweather.features.weatherHistory
 
-import com.example.sfweather.common.models.SearchHistory
-import com.example.sfweather.common.services.SearchHistoryService
+import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.services.WeatherService
 import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     private var view:WeatherHistoryContract.View? = null
-    private val searchHistoryService: SearchHistoryService by inject()
+    private val weatherService: WeatherService by inject()
 
     private var searchHistories: MutableList<SearchHistory>? = null
 
@@ -23,15 +23,12 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     }
 
     override fun onViewCreated() {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
+            searchHistories = weatherService.getAllHistories().toMutableList()
 
-            searchHistories = withContext(Dispatchers.IO) {
-                //network or DB
-                searchHistoryService.getAll().toMutableList()
+            withContext(Dispatchers.Main) {
+                view?.reloadRecyclerView()
             }
-
-            // ui, main thread
-            view?.reloadRecyclerView()
         }
     }
 
@@ -66,18 +63,18 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     }
 
     override fun removeSearchHistoryAtPosition(position: Int) {
-        val searchHistory = getSearchHistoryAtPosition(position)
+        CoroutineScope(Dispatchers.IO).launch {
+            val searchHistory = getSearchHistoryAtPosition(position)
 
-        if (searchHistory != null) {
-            CoroutineScope(Dispatchers.Main).launch {
-                val deleteCount = withContext(Dispatchers.IO) {
-                    searchHistoryService.deleteByCityId(searchHistory.cityId)
-                }
+            if (searchHistory != null) {
+                val deleteCount = weatherService.deleteHistoryByCityId(searchHistory.cityId)
 
                 if (deleteCount > 0) {
                     searchHistories!!.removeAt(position)
 
-                    view?.reloadRecyclerView()
+                    withContext(Dispatchers.Main) {
+                        view?.reloadRecyclerView()
+                    }
                 }
             }
         }

@@ -1,10 +1,9 @@
 package com.example.sfweather.features.weatherDetails
 
-import com.example.sfweather.features.weatherDetails.models.OWApiError
-import com.example.sfweather.features.weatherDetails.models.OWResult
-import com.example.sfweather.common.models.SearchHistory
-import com.example.sfweather.features.weatherDetails.services.OWService
-import com.example.sfweather.common.services.SearchHistoryService
+import com.example.sfweather.models.OWApiError
+import com.example.sfweather.models.OWResult
+import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.services.WeatherService
 import kotlinx.coroutines.*
 import retrofit2.Response
 import org.koin.core.KoinComponent
@@ -13,8 +12,7 @@ import org.koin.core.inject
 class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     private var view: WeatherDetailsContract.View? = null
 
-    private val owService: OWService by inject()
-    private val searchHistoryService: SearchHistoryService by inject()
+    private val weatherService: WeatherService by inject()
 
     override fun attachView(view: WeatherDetailsContract.View) {
         this.view = view
@@ -25,10 +23,8 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     }
 
     override fun fetchLastStoredWeather() {
-        CoroutineScope(Dispatchers.Main).launch {
-            val searchHistory = withContext(Dispatchers.IO) {
-                searchHistoryService.getLatest()
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            val searchHistory = weatherService.getLatestHistory()
 
             if (searchHistory != null) {
                 fetchWeatherByCityId(searchHistory.cityId)
@@ -37,24 +33,20 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     }
 
     override fun fetchWeatherByCityName(cityName: String) {
-        CoroutineScope(Dispatchers.Main).launch {
-            view?.setIsLoading(true)
+        view?.setIsLoading(true)
 
-            val response = withContext(Dispatchers.IO) {
-                owService.findByCityName(cityName)
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = weatherService.findWeatherByCityName(cityName)
 
             handleResponse(response)
         }
     }
 
     override fun fetchWeatherByCityId(cityId: Int) {
-        CoroutineScope(Dispatchers.Main).launch {
-            view?.setIsLoading(true)
+        view?.setIsLoading(true)
 
-            val response = withContext(Dispatchers.IO) {
-                owService.findByCityId(cityId)
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = weatherService.findWeatherByCityId(cityId)
 
             handleResponse(response)
         }
@@ -63,34 +55,32 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
 
     //region private methods
     private fun handleResponse(response: Response<OWResult>) {
-        try {
-            if (response.isSuccessful) {
-                val owResult = response.body()!!
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                if (response.isSuccessful) {
+                    val owResult = response.body()!!
 
-                // update view
+                    // update view
 
-                val weatherDetailsData = WeatherDetailsData(owResult)
-                view?.updateView(weatherDetailsData)
+                    val weatherDetailsData = WeatherDetailsData(owResult)
+                    view?.updateView(weatherDetailsData)
 
-                // store to db
-                insertSearchHistory(owResult)
-            } else {
-                try {
+                    // store to db
+                    insertSearchHistory(owResult)
+                } else {
                     val apiError = OWApiError.createFromResponse(response.errorBody()!!)
 
                     view?.showErrorMessage(apiError.message)
-                } catch (e:Exception) {
-                    view?.showErrorMessage(if (!e.message.isNullOrEmpty()) e.message!! else "Unknown Error")
                 }
+            } catch (e: Exception) {
+                e.message?.let {
+                    view?.showErrorMessage(it)
+                } ?: run {
+                    view?.showErrorMessage("Unknown Error")
+                }
+            } finally {
+                view?.setIsLoading(false)
             }
-        } catch (e: Exception) {
-            e.message?.let {
-                view?.showErrorMessage(it)
-            } ?: run {
-                view?.showErrorMessage("Unknown Error")
-            }
-        } finally {
-            view?.setIsLoading(false)
         }
     }
 
@@ -99,7 +89,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         val searchHistory = SearchHistory(owResult.id, owResult.name, timestamp)
 
         CoroutineScope(Dispatchers.IO).launch {
-            searchHistoryService.upsert(searchHistory)
+            weatherService.insertHistory(searchHistory)
         }
     }
     //endregion
