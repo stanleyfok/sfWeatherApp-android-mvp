@@ -1,14 +1,14 @@
 package com.example.sfweather.features.weatherHistory
 
 import com.example.sfweather.models.SearchHistory
-import com.example.sfweather.services.WeatherService
+import com.example.sfweather.repositories.WeatherRepository
 import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     private var view:WeatherHistoryContract.View? = null
-    private val weatherService: WeatherService by inject()
+    private val weatherRepository: WeatherRepository by inject()
 
     private var searchHistories: MutableList<SearchHistory>? = null
 
@@ -24,7 +24,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
 
     override fun onViewCreated() {
         CoroutineScope(Dispatchers.IO).launch {
-            searchHistories = weatherService.getAllHistories().toMutableList()
+            searchHistories = weatherRepository.getAllHistories().toMutableList()
 
             withContext(Dispatchers.Main) {
                 view?.reloadRecyclerView()
@@ -67,7 +67,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
             val searchHistory = getSearchHistoryAtPosition(position)
 
             if (searchHistory != null) {
-                val deleteCount = weatherService.deleteHistoryByCityId(searchHistory.cityId)
+                val deleteCount = weatherRepository.deleteHistoryByCityId(searchHistory.cityId)
 
                 if (deleteCount > 0) {
                     searchHistories!!.removeAt(position)

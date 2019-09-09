@@ -3,7 +3,7 @@ package com.example.sfweather.features.weatherDetails
 import com.example.sfweather.models.OWApiError
 import com.example.sfweather.models.OWResult
 import com.example.sfweather.models.SearchHistory
-import com.example.sfweather.services.WeatherService
+import com.example.sfweather.repositories.WeatherRepository
 import kotlinx.coroutines.*
 import retrofit2.Response
 import org.koin.core.KoinComponent
@@ -12,7 +12,7 @@ import org.koin.core.inject
 class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     private var view: WeatherDetailsContract.View? = null
 
-    private val weatherService: WeatherService by inject()
+    private val weatherRepository: WeatherRepository by inject()
 
     override fun attachView(view: WeatherDetailsContract.View) {
         this.view = view
@@ -24,7 +24,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
 
     override fun fetchLastStoredWeather() {
         CoroutineScope(Dispatchers.IO).launch {
-            val searchHistory = weatherService.getLatestHistory()
+            val searchHistory = weatherRepository.getLatestHistory()
 
             if (searchHistory != null) {
                 fetchWeatherByCityId(searchHistory.cityId)
@@ -36,7 +36,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         view?.setIsLoading(true)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val response = weatherService.findWeatherByCityName(cityName)
+            val response = weatherRepository.findWeatherByCityName(cityName)
 
             handleResponse(response)
         }
@@ -46,7 +46,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         view?.setIsLoading(true)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val response = weatherService.findWeatherByCityId(cityId)
+            val response = weatherRepository.findWeatherByCityId(cityId)
 
             handleResponse(response)
         }
@@ -89,7 +89,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         val searchHistory = SearchHistory(owResult.id, owResult.name, timestamp)
 
         CoroutineScope(Dispatchers.IO).launch {
-            weatherService.insertHistory(searchHistory)
+            weatherRepository.insertHistory(searchHistory)
         }
     }
     //endregion
